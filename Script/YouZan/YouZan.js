@@ -41,7 +41,7 @@ async function getCookie() {
     let extraData = $request.headers["extra-data"] || $request.headers["Extra-Data"];
     if (!extraData) {
         console.log('获取额外数据失败',$request.headers);
-        $.msg($.name, '', '获取额外数据失败');
+        $.msg($.name, `${checkinId}`, '获取额外数据失败');
         return
     }
     const urlStr = $request.url.split('?')[1];
@@ -66,6 +66,7 @@ async function getCookie() {
         if (index !== -1) {
             if (YouZan[existingIndex].data[index].token == data.token) {
                 console.log(`${checkinId} 重复获取 cookie `,JSON.stringify(data))
+                $.msg($.name, `${checkinId}`, `🎉用户 ${data.id} 重复获取 cookie!`);
                 return
             } else {
                 YouZan[existingIndex].data[index] = data;
