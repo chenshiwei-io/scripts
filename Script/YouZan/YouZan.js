@@ -40,6 +40,8 @@ async function main() {
 async function getCookie() {
     let extraData = $request.headers["extra-data"] || $request.headers["Extra-Data"];
     if (!extraData) {
+        console.log('获取额外数据失败',$request.headers);
+        $.msg($.name, '', '获取额外数据失败');
         return
     }
     const urlStr = $request.url.split('?')[1];
@@ -58,10 +60,12 @@ async function getCookie() {
     const newData = {"checkinId": checkinId, "data": []};
     const data = {"id": id, "appId": appId, "kdtId": kdtId, "token": token, "extraData":extraData};
     const existingIndex = YouZan.findIndex(e => e.checkinId == newData.checkinId);
+    $.msg($.name, `${checkinId}`, `🎉用户${data.id}更新token成功!`);
     if (existingIndex !== -1) {
         const index = YouZan[existingIndex].data.findIndex(e => e.id == data.id);
         if (index !== -1) {
             if (YouZan[existingIndex].data[index].token == data.token) {
+                console.log(`${checkinId} 重复获取 cookie `,JSON.stringify(data))
                 return
             } else {
                 YouZan[existingIndex].data[index] = data;
