@@ -1,0 +1,98 @@
+{
+  "id": "chenshiwei-io.boxjs",
+  "name": "chenshiwei-io.boxjs",
+  "author": "chenshiwei-io",
+  "icon": "https://avatars.githubusercontent.com/u/31839681?v=4",
+  "repo": "https://github.com/chenshiwei-io/boxjs",
+  "apps": [
+    {
+      "id": "heytea",
+      "name": "喜茶积分签到",
+      "keys": [
+        "heytea",
+        "score",
+        "daily_sign"
+      ],
+      "author": "chenshiwei-io",
+      "repo": "https://github.com/chenshiwei-io/boxjs/tree/master/scripts/HeyTea",
+      "url": "https://github.com/chenshiwei-io/boxjs/tree/master/scripts/HeyTea",
+      "script": "https://raw.githubusercontent.com/chenshiwei-io/boxjs/master/scripts/HeayTea/HeyTea.js",
+      "icons": [
+      ],
+      "tasks": [
+        {
+          "cron": "10 0,8 * * *",
+          "script": "HeyTea.js"
+        }
+      ],
+      "rewrites": [
+        {
+          "type": "request",
+          "pattern": "^https:\\/\\/go\\.heytea\\.com\\/api\\/service-member\\/vip\\/member-exp\\/account-info",
+          "script": "HeyTea.js",
+          "body": true          
+        }
+      ]
+    },
+    {
+      "id": "hgds",
+      "name": "哈根达斯积分签到",
+      "keys": [
+        "hgds",
+        "score",
+        "daily_sign"
+      ],
+      "author": "chenshiwei-io",
+      "repo": "https://github.com/chenshiwei-io/boxjs/tree/master/scripts/HGDS",
+      "url": "https://github.com/chenshiwei-io/boxjs/tree/master/scripts/HGDS",
+      "script": "https://raw.githubusercontent.com/chenshiwei-io/boxjs/master/scripts/HGDS/HGDS.js",
+      "icons": [
+      ],
+      "tasks": [
+        {
+          "cron": "43 1,21 * * *",
+          "script": "HGDS.js"
+        }
+      ],
+      "rewrites": [
+        {
+          "pattern": "^https:\\/\\/hgds-crm\\.myaiwecom\\.com\\/api\\/wxapp\\/member\\/getMemberDetail",
+          "type": "request",
+          "script": "HGDS.js",
+          "body": true          
+        }
+      ]
+    },
+    {
+      "id": "YouZanCookie",
+      "name": "基于有赞的微信小程序积分 cookie 签到",
+      "keys": [
+        "youzan",
+        "cookie",
+        "score",
+        "daily_sign"
+      ],
+      "author": "chenshiwei-io",
+      "repo": "https://github.com/chenshiwei-io/boxjs/tree/master/scripts/YouZanCookie",
+      "url": "https://github.com/chenshiwei-io/boxjs/tree/master/scripts/YouZanCookie",
+      "script": "https://raw.githubusercontent.com/chenshiwei-io/boxjs/master/scripts/YouZanCookie/YouZanCookie.js",
+      "icons": [
+      ],
+      "tasks": [
+        {
+          "cron": "0 1 0,10 * * ?",
+          "script": "YouZanCookie.js"
+        }
+      ],
+      "rewrites": [
+        {
+          "pattern": "^https?:\\/\\/h5\\.youzan\\.com\\/wscump\\/checkin\\/get_activity_by_yzuid_v2\\.json",
+          "type": "request",
+          "script": "YouZanCookie.js",
+          "body": true          
+        }
+
+      ]
+    }
+  ]
+}
