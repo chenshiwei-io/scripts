@@ -59,10 +59,14 @@ async function getCookie() {
     const checkinId = urlQuerys.checkinId;
     const kdtId = urlQuerys.kdt_id;
 
+    // 获取微信小程序名称
+    let name = checkinId
     // 使用 find 方法找到包含目标键的对象
-    let weapp = activityWeapp.find(item => item[checkinId] !== undefined);
-    console.log($.name,`$hook ${checkinId} 签到：${weapp}`)
-    $.msg($.name, `hook ${checkinId} 签到：${weapp}`);
+    if (activityWeapp.find(item => checkinId in item)) {
+        name = activityWeapp.find(item => checkinId in item)[checkinId];
+    }
+    console.log($.name,`$hook ${checkinId} 签到：${name}`)
+    $.msg($.name, `hook ${checkinId} 签到：${name}`);
 
     let yzLogWeappDataString = getCookieValue(cookie,'yz_log_weapp_data');
     // 解析为 JSON 对象
@@ -78,9 +82,9 @@ async function getCookie() {
         console.log('未找到 yz_log_weapp_data');
     }
 
-    const newData = {"checkinId": checkinId,name: weapp, "data": []};
+    const newData = {"checkinId": checkinId,name: name, "data": []};
     const userCookie = {"id": yzLogWeappData.user.uuid ,"cookie": cookie,"kdtId": kdtId};
-    console.log(`${weapp} usercookie `,userCookie)
+    console.log(`${name} usercookie `,userCookie)
 
     // 判断是否已缓存该小程序 token
     const existingIndex = YouZanCookie.findIndex(e => e.checkinId == checkinId);
@@ -94,32 +98,35 @@ async function getCookie() {
         if (index !== -1) {
             // 已缓存该用户,cookie 相同则不更新
             if (YouZanCookie[existingIndex].data[index].cookie == userCookie.cookie) {
-                console.log(`${weapp} 重复获取 cookie `,cookie)
-                $.msg($.name, `${weapp}`, `🎉用户 ${userCookie.id} 重复获取 cookie!`);
+                console.log(`${name} 重复获取 cookie `,cookie)
+                $.msg($.name, `${name}`, `🎉用户 ${userCookie.id} 重复获取 cookie!`);
                 return
             } else {
                 // 更新 cookie
                 YouZanCookie[existingIndex].data[index] = userCookie;
                 console.log(JSON.stringify(userCookie))
-                $.msg($.name, `${weapp}`, `🎉用户${userCookie.id}更新token成功!`);
+                $.msg($.name, `${name}`, `🎉用户${userCookie.id}更新token成功!`);
             }
         } else {
             // 没有缓存该用户
             YouZanCookie[existingIndex].data.push(userCookie)
             console.log(JSON.stringify(userCookie))
-            $.msg($.name, `${weapp}`, `🎉新增用户${userCookie.id}成功!`);
+            $.msg($.name, `${name}`, `🎉新增用户${userCookie.id}成功!`);
         }
         
     } else {
          // 未缓存该小程序
-        console.log($.name,`${weapp}`,"发现新的签到活动")
-        $.msg($.name, `${weapp}`,`🎉发现新的签到活动!`);
+        console.log($.name,`${name}`,"发现新的签到活动")
+        $.msg($.name, `${name}`,`🎉发现新的签到活动!`);
         YouZanCookie.push(newData)
         newData.data.push(userCookie)
         console.log(JSON.stringify(userCookie))
-        $.msg($.name, `${weapp}`, `🎉新增用户${userCookie.id}成功!`);
+        $.msg($.name, `${name}`, `🎉新增用户${userCookie.id}成功!`);
     }
     $.setjson(YouZanCookie, "YouZanCookie");
+
+    // 执行签到测试
+    await main();
 }
 
 
