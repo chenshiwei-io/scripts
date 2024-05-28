@@ -11,7 +11,6 @@ let notice = ''
 })().catch((e) => {$.log(e)}).finally(() => {$.done({});});
 
 async function main() {
-    console.log('作者：@xzxxn777\n频道：https://t.me/xzxxn777\n群组：https://t.me/xzxxn7777\n自用机场推荐：https://xn--diqv0fut7b.com\n')
     for (const item of HGDS) {
         id = item.id;
         token = item.token;
@@ -50,11 +49,13 @@ async function main() {
 async function getCookie() {
     const token = $request.headers["authorization"] || $request.headers["Authorization"];
     if (!token) {
+        $.msg($.name, `❌脚本失效，Authorization 字段无效`, ``);
         return
     }
     const sessionKey = $request.headers["X-Hg-Req-Sign-Nonce"].split('==')[0] + '==';
     const responseDody = $.toObj($response.body);
     if (!responseDody.data || !responseDody.data.socialhubId) {
+        $.msg($.name, `❌脚本失效，X-Hg-Req-Sign-Nonce 字段无效`, ``);
         return
     }
     const socialhubId = responseDody.data.socialhubId;
@@ -64,6 +65,7 @@ async function getCookie() {
     const index = HGDS.findIndex(e => e.id == newData.id);
     if (index !== -1) {
         if (HGDS[index].token == newData.token) {
+            $.msg($.name, `🎉用户${newData.id} token已存在，跳过更新`, ``);
             return
         } else {
             HGDS[index] = newData;
@@ -76,6 +78,9 @@ async function getCookie() {
         $.msg($.name, `🎉新增用户${newData.id}成功!`, ``);
     }
     $.setjson(HGDS, "HGDS");
+    
+    // 执行签到
+    await main();
 }
 
 async function commonGet(url, body) {
