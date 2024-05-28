@@ -9,7 +9,6 @@ const HeyTea = ($.isNode() ? process.env.HeyTea : $.getjson("HeyTea")) || [];
 })().catch((e) => {$.log(e)}).finally(() => {$.done({});});
 
 async function main() {
-    console.log('作者：@xzxxn777\n频道：https://t.me/xzxxn777\n群组：https://t.me/xzxxn7777\n自用机场推荐：https://xn--diqv0fut7b.com\n')
     for (const account of HeyTea) {
         headers = {
             'x-version': '5.1.30',
@@ -49,6 +48,7 @@ async function main() {
 async function getCookie() {
     const authorization = $request.headers["authorization"];
     if (!authorization) {
+        $.msg($.name, `❌脚本失效，Authorization 字段无效`, ``);
         return
     }
     const body = $.toObj($response.body);
@@ -57,6 +57,7 @@ async function getCookie() {
     const index = HeyTea.findIndex(e => e.userId == newData.userId);
     if (index !== -1) {
         if (HeyTea[index].authorization == newData.authorization) {
+            $.msg($.name, `🎉用户${newData.userId} token已存在，跳过更新`, ``);
             return
         } else {
             HeyTea[index] = newData;
