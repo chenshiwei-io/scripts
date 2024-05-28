@@ -71,6 +71,7 @@ async function getCookie() {
         $.msg($.name, `🎉新增用户${newData.userId}成功!`, ``);
     }
     $.setjson(HeyTea, "HeyTea");
+    await main();
 }
 
 async function commonPost(url,body = {}) {
