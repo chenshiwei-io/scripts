@@ -46,9 +46,9 @@ async function main() {
 }
 
 async function getCookie() {
-    const authorization = $request.headers["authorization"];
+    const authorization = $request.headers["authorization"] || $request.headers["Authorization"];
     if (!authorization) {
-        $.msg($.name, `❌脚本失效，Authorization 字段无效`, ``);
+        $.msg($.name, `❌ 脚本失效，Headers Authorization 字段无效`, ``);
         return
     }
     const body = $.toObj($response.body);
