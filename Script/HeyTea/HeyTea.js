@@ -36,20 +36,29 @@ async function main() {
         //签到
         console.log("开始签到")
         let sign = await commonPost("/award/114")
-        console.log(sign)
-        console.log("————————————")
-        //查询积分
-        let info = await commonGet("/member")
-        console.log(`拥有积分: ${info.data.usableScore}`)
-        $.msg($.name, `用户：${account.userId}`, `拥有积分: ${info.data.usableScore}`);
+        if (sign.code == 400045) {
+              //查询积分
+              let info = await commonGet("/member")
+              console.log(`拥有积分: ${info.data.usableScore}`)
+              $.msg($.name, `🎉用户：${account.userId}`, `${sign.msg} 拥有积分: ${info.data.usableScore}`);
+            return
+        } else if (sign.code == 0) {            
+            //查询积分
+            let info = await commonGet("/member")
+            console.log(`拥有积分: ${info.data.usableScore}`)
+            $.msg($.name, `🎉用户：${account.userId}`, `${sign.msg} 拥有积分: ${info.data.usableScore}`);
+        }else{
+            $.msg($.name, `❌用户：${account.userId}`, `${sign.msg}`);
+        }
+      
     }
 }
 
 async function getCookie() {
     const authorization = $request.headers["authorization"] || $request.headers["Authorization"];
     if (!authorization) {
-        $.msg($.name, `❌ 脚本失效，Headers Authorization 字段无效`, ``);
-        console.log("❌ 脚本失效，Headers Authorization 字段无效",$request.headers)
+        // $.msg($.name, `❌ 脚本失效，Headers Authorization 字段无效`, ``);
+        // console.log("❌ 脚本失效，Headers Authorization 字段无效",$request.headers)
         return
     }
     const body = $.toObj($response.body);
