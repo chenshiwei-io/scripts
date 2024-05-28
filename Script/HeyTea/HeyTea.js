@@ -62,16 +62,18 @@ async function getCookie() {
         return
     }
     const body = $.toObj($response.body);
+    console.log(`用户`,body.data)
     const userId = body.data.userMainId;
     const newData = {"userId": userId, "authorization": authorization}
     const index = HeyTea.findIndex(e => e.userId == newData.userId);
     if (index !== -1) {
-        if (HeyTea[index].authorization == newData.authorization) {
+        if (HeyTea[index].authorization === newData.authorization) {
             $.msg($.name, `🎉用户${newData.userId} token已存在，跳过更新`, ``);
             return
         } else {
+            console.log("更新 before",HeyTea[index])
             HeyTea[index] = newData;
-            console.log(newData.authorization)
+            console.log("更新 after",HeyTea[index])
             $.msg($.name, `🎉用户${newData.userId}更新token成功!`, ``);
         }
     } else {
