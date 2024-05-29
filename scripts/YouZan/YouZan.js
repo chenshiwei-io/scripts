@@ -4,11 +4,19 @@ let activityArr = [{"12063":"SKG会员商城"},{"99":"魅族商城Lite"},{"21628
 let notice = '';
 !(async () => {
     if (typeof $request != "undefined") {
-        await getCookie();
+        if ($request.headers["Cookie"] || $request.headers["cookie"]) {
+            await getCookie();
+            return
+        }
+        if ($request.headers["extra-data"] || $request.headers["Extra-Data"];) {
+            await getExtraData();
+            return
+        }
     } else {
         await main();
     }
 })().catch((e) => {$.log(e)}).finally(() => {$.done({});});
+
 
 async function main() {
     for (const item of YouZan) {
@@ -20,9 +28,17 @@ async function main() {
         console.log(name);
         notice += `${name}\n`;
         for (const data of item.data) {
-            let id = data.id, appId = data.appId, kdtId = data.kdtId, token = data.token, extraData = data.extraData;
-            console.log(`用户：${id}开始签到`)
-            let checkin = await commonGet(`checkinId=${checkinId}&app_id=${appId}&kdt_id=${kdtId}&access_token=${token}`,extraData);
+            let checkin;
+            if (!data.cookie) {
+                let id = data.id, kdtId = data.kdtId, cookie = data.cookie;
+                console.log(`用户：${id}开始签到`)
+                checkin = await commonGetWithCookie(`checkinId=${checkinId}&kdt_id=${kdtId}`,cookie);
+            }else{
+                let id = data.id, appId = data.appId, kdtId = data.kdtId, token = data.token, extraData = data.extraData;
+                console.log(`用户：${id}开始签到`)
+                checkin = await commonGetWithExtraData(`checkinId=${checkinId}&app_id=${appId}&kdt_id=${kdtId}&access_token=${token}`,extraData);
+            }
+
             if (checkin.code == -1) {
                 $.msg($.name, `${name} 用户：${id}`, `token已过期，请重新获取`);
                 continue
@@ -36,7 +52,7 @@ async function main() {
     }
 }
 
-async function getCookie() {
+async function getExtraData() {
     let extraData = $request.headers["extra-data"] || $request.headers["Extra-Data"];
     if (!extraData) {
         console.log('获取额外数据失败',$request.headers);
@@ -88,7 +104,109 @@ async function getCookie() {
     $.setjson(YouZan, "YouZan");
 }
 
-async function commonGet(url,extraData) {
+async function getCookie() {    
+
+    let cookie = $request.headers["Cookie"] || $request.headers["cookie"];
+    if (!cookie) {
+        console.log('获取 Cookie 失败, headers 不存在 Cookie 字段',$request.headers);
+        $.msg($request.url, `${checkinId}`, '获取额外数据失败');
+        return
+    }
+    const urlStr = $request.url.split('?')[1];
+    let urlQuerys = {};
+    
+    let paramsArr = urlStr.split('&')
+    for(let i = 0,len = paramsArr.length;i < len;i++){
+        let arr = paramsArr[i].split('=')
+        urlQuerys[arr[0]] = arr[1];
+    }
+
+    const checkinId = urlQuerys.checkinId;
+    const kdtId = urlQuerys.kdt_id;
+
+    // 获取微信小程序名称
+    let name = checkinId
+    // 使用 find 方法找到包含目标键的对象
+    if (activityWeapp.find(item => checkinId in item)) {
+        name = activityWeapp.find(item => checkinId in item)[checkinId];
+    }
+    console.log($.name,`$hook ${checkinId} 签到：${name}`)
+    $.msg($.name, `hook ${checkinId} 签到：${name}`);
+
+    let yzLogWeappDataString = getCookieValue(cookie,'yz_log_weapp_data');
+    // 解析为 JSON 对象
+    let yzLogWeappData;
+    if (yzLogWeappDataString) {
+        try {
+            yzLogWeappData = JSON.parse(yzLogWeappDataString);
+            console.log(yzLogWeappData); // 输出解析后的 JSON 对象
+        } catch (e) {
+            console.error('解析 yz_log_weapp_data 失败:', e);
+        }
+    } else {
+        console.log('未找到 yz_log_weapp_data');
+    }
+
+    const newData = {"checkinId": checkinId,name: name, "data": []};
+    const userCookie = {"id": yzLogWeappData.user.uuid ,"cookie": cookie,"kdtId": kdtId};
+    console.log(`${name} usercookie `,userCookie)
+
+    // 判断是否已缓存该小程序 token
+    const existingIndex = YouZanCookie.findIndex(e => e.checkinId == checkinId);
+    
+    if (existingIndex !== -1) {
+        // 已缓存该小程序    
+
+        // 判断是否已缓存该用户
+        const index = YouZanCookie[existingIndex].data.findIndex(e => e.id == userCookie.id);
+
+        if (index !== -1) {
+            // 已缓存该用户,cookie 相同则不更新
+            if (YouZanCookie[existingIndex].data[index].cookie == userCookie.cookie) {
+                console.log(`${name} 重复获取 cookie `,cookie)
+                $.msg($.name, `${name}`, `🎉用户 ${userCookie.id} 重复获取 cookie!`);
+                return
+            } else {
+                // 更新 cookie
+                YouZanCookie[existingIndex].data[index] = userCookie;
+                console.log(JSON.stringify(userCookie))
+                $.msg($.name, `${name}`, `🎉用户${userCookie.id}更新token成功!`);
+            }
+        } else {
+            // 没有缓存该用户
+            YouZanCookie[existingIndex].data.push(userCookie)
+            console.log(JSON.stringify(userCookie))
+            $.msg($.name, `${name}`, `🎉新增用户${userCookie.id}成功!`);
+        }
+        
+    } else {
+         // 未缓存该小程序
+        console.log($.name,`${name}`,"发现新的签到活动")
+        $.msg($.name, `${name}`,`🎉发现新的签到活动!`);
+        YouZanCookie.push(newData)
+        newData.data.push(userCookie)
+        console.log(JSON.stringify(userCookie))
+        $.msg($.name, `${name}`, `🎉新增用户${userCookie.id}成功!`);
+    }
+    $.setjson(YouZanCookie, "YouZanCookie");
+
+}
+
+
+// 从 cookie 中提取指定的键
+function getCookieValue(cookieString,name) {
+    let nameEQ = name + "=";
+    let ca = cookieString.split(';');
+    for(let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+
+
+async function commonGetWithExtraData(url,extraData) {
     return new Promise(resolve => {
         const options = {
             url: `https://h5.youzan.com/wscump/checkin/checkinV2.json?${url}`,
@@ -97,6 +215,34 @@ async function commonGet(url,extraData) {
                 'Content-Type': 'application/json',
                 'Accept-Encoding': 'gzip,compress,br,deflate',
                 'Extra-Data': extraData
+            }
+        }
+        $.get(options, async (err, resp, data) => {
+            try {
+                if (err) {
+                    console.log(`${JSON.stringify(err)}`)
+                    console.log(`${$.name} API请求失败，请检查网路重试`)
+                } else {
+                    resolve(JSON.parse(data));
+                }
+            } catch (e) {
+                $.logErr(e, resp)
+            } finally {
+                resolve();
+            }
+        })
+    })
+}
+
+async function commonGetWithCookie(url,cookie) {
+    return new Promise(resolve => {
+        const options = {
+            url: `https://h5.youzan.com/wscump/checkin/checkinV2.json?${url}`,
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 10; 16th Build/QKQ1.191222.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36 XWEB/1160083 MMWEBSDK/20231202 MMWEBID/2933 MicroMessenger/8.0.47.2560(0x28002F50) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64 MiniProgramEnv/android',
+                'Content-Type': 'application/json',
+                'Accept-Encoding': 'gzip,compress,br,deflate',
+                'Cookie': cookie
             }
         }
         $.get(options, async (err, resp, data) => {
