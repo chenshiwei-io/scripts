@@ -8,7 +8,7 @@ let notice = '';
             await getCookie();
             return
         }
-        if ($request.headers["extra-data"] || $request.headers["Extra-Data"];) {
+        if ($request.headers["extra-data"] || $request.headers["Extra-Data"]) {
             await getExtraData();
             return
         }
