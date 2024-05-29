@@ -4,7 +4,7 @@ const bwtoken = $.getdata("bw_token");
 //const bwbody = $.getdata("bw_body");
 
 const bw = {
-  url: "https://webapi.qmai.cn/web/catering/integral/sign/signIn",
+  url: "https://webapi2.qmai.cn/web/catering/integral/sign/signIn",
   headers: {
     'Accept-Encoding' : `gzip,compress,br,deflate`,
     'Qm-From' : `wechat`,
