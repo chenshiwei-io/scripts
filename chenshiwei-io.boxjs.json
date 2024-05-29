@@ -1,9 +1,9 @@
 {
-  "id": "chenshiwei-io.boxjs",
-  "name": "chenshiwei-io.boxjs",
+  "id": "chenshiwei-io.scripts",
+  "name": "chenshiwei-io.scripts",
   "author": "chenshiwei-io",
   "icon": "https://avatars.githubusercontent.com/u/31839681?v=4",
-  "repo": "https://github.com/chenshiwei-io/boxjs",
+  "repo": "https://github.com/chenshiwei-io/scripts",
   "apps": [
     {
       "id": "heytea",
@@ -15,8 +15,7 @@
       ],
       "author": "chenshiwei-io",
       "repo": "https://github.com/chenshiwei-io/scripts/tree/master/scripts/HeyTea",
-      "url": "https://github.com/chenshiwei-io/scripts/tree/master/scripts/HeyTea",
-      "script": "https://raw.githubusercontent.com/chenshiwei-io/boxjs/master/scripts/HeayTea/HeyTea.js",
+      "script": "https://raw.githubusercontent.com/chenshiwei-io/scripts/master/scripts/HeayTea/HeyTea.js",
       "icons": [
       ],
       "tasks": [
@@ -44,8 +43,7 @@
       ],
       "author": "chenshiwei-io",
       "repo": "https://github.com/chenshiwei-io/scripts/tree/master/scripts/HGDS",
-      "url": "https://github.com/chenshiwei-io/scripts/tree/master/scripts/HGDS",
-      "script": "https://raw.githubusercontent.com/chenshiwei-io/boxjs/master/scripts/HGDS/HGDS.js",
+      "script": "https://raw.githubusercontent.com/chenshiwei-io/scripts/master/scripts/HGDS/HGDS.js",
       "icons": [
       ],
       "tasks": [
@@ -74,8 +72,7 @@
       ],
       "author": "chenshiwei-io",
       "repo": "https://github.com/chenshiwei-io/scripts/tree/master/scripts/YouZanCookie",
-      "url": "https://github.com/chenshiwei-io/scripts/tree/master/scripts/YouZanCookie",
-      "script": "https://raw.githubusercontent.com/chenshiwei-io/boxjs/master/scripts/YouZanCookie/YouZanCookie.js",
+      "script": "https://raw.githubusercontent.com/chenshiwei-io/scripts/master/scripts/YouZanCookie/YouZanCookie.js",
       "icons": [
       ],
       "tasks": [
@@ -105,8 +102,7 @@
       ],
       "author": "chenshiwei-io",
       "repo": "https://github.com/chenshiwei-io/scripts/tree/master/scripts/YouZan",
-      "url": "https://github.com/chenshiwei-io/scripts/tree/master/scripts/YouZan",
-      "script": "https://raw.githubusercontent.com/chenshiwei-io/boxjs/master/scripts/YouZan/YouZan.js",
+      "script": "https://raw.githubusercontent.com/chenshiwei-io/scripts/master/scripts/YouZan/YouZan.js",
       "icons": [
       ],
       "tasks": [
@@ -136,8 +132,7 @@
       ],
       "author": "chenshiwei-io",
       "repo": "https://github.com/chenshiwei-io/scripts/tree/master/scripts/WangYiYanXuan",
-      "url": "https://github.com/chenshiwei-io/scripts/tree/master/scripts/WangYiYanXuan",
-      "script": "https://raw.githubusercontent.com/chenshiwei-io/boxjs/master/scripts/WangYiYanXuan/WangYiYanXuan.js",
+      "script": "https://raw.githubusercontent.com/chenshiwei-io/scripts/master/scripts/WangYiYanXuan/WangYiYanXuan.js",
       "icons": [
       ],
       "tasks": [
