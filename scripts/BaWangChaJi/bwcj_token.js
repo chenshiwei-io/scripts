@@ -3,7 +3,7 @@ const $ = new Env('🥤霸王茶姬token');
     if (typeof $request != "undefined") {
         await getCookie();
     } 
-    
+
 })().catch((e) => {$.log(e)}).finally(() => {$.done({});});
 
 
