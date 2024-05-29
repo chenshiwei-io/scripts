@@ -14,7 +14,7 @@
         "daily_sign"
       ],
       "author": "chenshiwei-io",
-      "repo": "https://github.com/chenshiwei-io/scripts/tree/master/scripts/HeyTea",
+      "repo": "https://github.com/chenshiwei-io/scripts//master/scripts/HeyTea",
       "script": "https://raw.githubusercontent.com/chenshiwei-io/scripts/master/scripts/HeayTea/HeyTea.js",
       "icons": [
       ],
@@ -42,7 +42,7 @@
         "daily_sign"
       ],
       "author": "chenshiwei-io",
-      "repo": "https://github.com/chenshiwei-io/scripts/tree/master/scripts/HGDS",
+      "repo": "https://github.com/chenshiwei-io/scripts//master/scripts/HGDS",
       "script": "https://raw.githubusercontent.com/chenshiwei-io/scripts/master/scripts/HGDS/HGDS.js",
       "icons": [
       ],
@@ -71,7 +71,7 @@
         "daily_sign"
       ],
       "author": "chenshiwei-io",
-      "repo": "https://github.com/chenshiwei-io/scripts/tree/master/scripts/YouZanCookie",
+      "repo": "https://github.com/chenshiwei-io/scripts//master/scripts/YouZanCookie",
       "script": "https://raw.githubusercontent.com/chenshiwei-io/scripts/master/scripts/YouZanCookie/YouZanCookie.js",
       "icons": [
       ],
@@ -101,7 +101,7 @@
         "daily_sign"
       ],
       "author": "chenshiwei-io",
-      "repo": "https://github.com/chenshiwei-io/scripts/tree/master/scripts/YouZan",
+      "repo": "https://github.com/chenshiwei-io/scripts//master/scripts/YouZan",
       "script": "https://raw.githubusercontent.com/chenshiwei-io/scripts/master/scripts/YouZan/YouZan.js",
       "icons": [
       ],
@@ -131,7 +131,7 @@
         "daily_sign"
       ],
       "author": "chenshiwei-io",
-      "repo": "https://github.com/chenshiwei-io/scripts/tree/master/scripts/WangYiYanXuan",
+      "repo": "https://github.com/chenshiwei-io/scripts//master/scripts/WangYiYanXuan",
       "script": "https://raw.githubusercontent.com/chenshiwei-io/scripts/master/scripts/WangYiYanXuan/WangYiYanXuan.js",
       "icons": [
       ],
