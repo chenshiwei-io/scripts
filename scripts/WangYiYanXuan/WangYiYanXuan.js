@@ -1,6 +1,6 @@
-const $ = new Env('有赞-Cookie版本签到');
-const YouZanCookie = ($.isNode() ? JSON.parse(process.env.YouZanCookie) : $.getjson("YouZanCookie")) || [];
-let activityWeapp = [{"18201":"小罐茶官方旗舰店"}];
+const $ = new Env('网易严选');
+let WangYiYanXuan = ($.isNode() ? process.env.WYYX : $.getjson("WangYiYanXuan")) || [];
+let cookie=''
 let notice = '';
 !(async () => {
     if (typeof $request != "undefined") {
@@ -11,147 +11,168 @@ let notice = '';
 })().catch((e) => {$.log(e)}).finally(() => {$.done({});});
 
 async function main() {
-    console.log(`执行 ${$.name}...`);
-    for (const item of YouZanCookie) {
-        let checkinId = item.checkinId;
-        let name = checkinId
-        // 获取微信小程序名称
-        if (activityWeapp.find(item => checkinId in item)) {
-            name = activityWeapp.find(item => checkinId in item)[checkinId];
+    for (const item of WangYiYanXuan) {
+        cookie = item.cookie;
+        userId = item.userId;
+        token = item.token;
+        console.log(`用户：${userId}开始任务`)
+        //签到
+        console.log("开始签到")
+        let sign = await weChatGet(`/act-attendance/att/v3/sign?csrf_token=${token}&__timestamp=${new Date().getTime()}&`);
+        console.log(sign.msg)
+        if(sign.code == 401){
+            $.msg($.name, `用户：${userId}`, `cookie已过期，请重新获取`);
+            continue
         }
-
-        console.log(name);
-        notice += `${name}\n`;
-        for (const data of item.data) {
-            let id = data.id, kdtId = data.kdtId, cookie = data.cookie;
-            console.log(`用户：${id}开始签到`)
-            let checkin = await commonGet(`checkinId=${checkinId}&kdt_id=${kdtId}`,cookie);
-            if (checkin.code == -1) {
-                $.msg($.name, `${name} 用户：${id}`, `token已过期，请重新获取`);
-                continue
+        //app任务
+        console.log("开始app任务")
+        let taskList = await commonGet(`/act-attendance/task/list`);
+        for (const task of taskList.data.dailyTasks) {
+            console.log(`任务：${task.title}`)
+            if(task.taskId != 201001){
+                let doTask = await commonPost(`/napi/play/web/taskT/task/trigger?_=${new Date().getTime()}`,{"taskId":task.taskId});
+                console.log(doTask.msg)
+                let reward = await commonPost(`/act-attendance/task/reward`,{"taskId":task.taskId});
+                console.log(reward.msg)
             }
-            console.log(`签到结果:${checkin.msg}\n`)
-            notice += `用户:${id}  签到结果:${checkin.msg}\n`;
         }
+        //小程序任务
+        console.log("————————————")
+        console.log("开始小程序任务")
+        let weChatTaskList = await weChatGet(`/act-attendance/task/list`);
+        for (const task of weChatTaskList.data.dailyTasks) {
+            console.log(`任务：${task.title}`)
+            if(task.taskId != 201001){
+                let doTask = await commonPost(`/napi/play/web/taskT/task/trigger?_=${new Date().getTime()}`,{"taskId":task.taskId});
+                console.log(doTask.msg)
+                let reward = await commonPost(`/act-attendance/task/reward`,{"taskId":task.taskId});
+                console.log(reward.msg)
+            }
+        }
+        //拆礼盒
+        console.log("————————————")
+        console.log("开始拆礼盒")
+        let getAwardNum = await commonGet(`/act-attendance/att/v4/index`);
+        let remainStepCount = getAwardNum.data.game.remainStepCount;
+        for (let i = 0;i<remainStepCount;i++) {
+            let getAward = await commonGet(`/act-attendance/att/v4/walk`);
+            console.log(getAward)
+            let awardName = getAward.data.awardDetailsInfoDTOS[0].awardName;
+            console.log("拆礼盒获得："+awardName)
+        }
+        //积分查询
+        console.log("————————————")
+        console.log("积分查询")
+        let getPoint = await commonGet(`/act-attendance/att/v4/index`);
+        console.log(`拥有积分: ${getPoint.data.points}\n`)
+        notice += `用户：${userId}拥有积分: ${getPoint.data.points}\n`
     }
     if (notice) {
         $.msg($.name, '', notice);
     }
 }
 
-async function getCookie() {    
-
-    let cookie = $request.headers["Cookie"] || $request.headers["cookie"];
+async function getCookie() {
+    const cookie = $request.headers["cookie"];
     if (!cookie) {
-        console.log('获取 Cookie 失败, headers 不存在 Cookie 字段',$request.headers);
-        $.msg($request.url, `${checkinId}`, '获取额外数据失败');
+        return
+    }
+    let result = {};
+    let paramsArr = cookie.split(";")
+    for(let i = 0,len = paramsArr.length;i < len;i++){
+        let arr = paramsArr[i].trim().split('=')
+        result[arr[0]] = arr[1];
+    }
+    const userId = result.yx_userid;
+    if (!userId) {
         return
     }
     const urlStr = $request.url.split('?')[1];
-    let urlQuerys = {};
-    
-    let paramsArr = urlStr.split('&')
-    for(let i = 0,len = paramsArr.length;i < len;i++){
-        let arr = paramsArr[i].split('=')
-        urlQuerys[arr[0]] = arr[1];
+    let result_token = {};
+    let paramsArr_token = urlStr.split('&')
+    for(let i = 0,len = paramsArr_token.length;i < len;i++){
+        let arr = paramsArr_token[i].split('=')
+        result_token[arr[0]] = arr[1];
     }
-
-    const checkinId = urlQuerys.checkinId;
-    const kdtId = urlQuerys.kdt_id;
-
-    // 获取微信小程序名称
-    let name = checkinId
-    // 使用 find 方法找到包含目标键的对象
-    if (activityWeapp.find(item => checkinId in item)) {
-        name = activityWeapp.find(item => checkinId in item)[checkinId];
+    const token = result_token.csrf_token;
+    if (!token) {
+        return
     }
-    console.log($.name,`$hook ${checkinId} 签到：${name}`)
-    $.msg($.name, `hook ${checkinId} 签到：${name}`);
-
-    let yzLogWeappDataString = getCookieValue(cookie,'yz_log_weapp_data');
-    // 解析为 JSON 对象
-    let yzLogWeappData;
-    if (yzLogWeappDataString) {
-        try {
-            yzLogWeappData = JSON.parse(yzLogWeappDataString);
-            console.log(yzLogWeappData); // 输出解析后的 JSON 对象
-        } catch (e) {
-            console.error('解析 yz_log_weapp_data 失败:', e);
-        }
-    } else {
-        console.log('未找到 yz_log_weapp_data');
-    }
-
-    const newData = {"checkinId": checkinId,name: name, "data": []};
-    const userCookie = {"id": yzLogWeappData.user.uuid ,"cookie": cookie,"kdtId": kdtId};
-    console.log(`${name} usercookie `,userCookie)
-
-    // 判断是否已缓存该小程序 token
-    const existingIndex = YouZanCookie.findIndex(e => e.checkinId == checkinId);
-    
-    if (existingIndex !== -1) {
-        // 已缓存该小程序    
-
-        // 判断是否已缓存该用户
-        const index = YouZanCookie[existingIndex].data.findIndex(e => e.id == userCookie.id);
-
-        if (index !== -1) {
-            // 已缓存该用户,cookie 相同则不更新
-            if (YouZanCookie[existingIndex].data[index].cookie == userCookie.cookie) {
-                console.log(`${name} 重复获取 cookie `,cookie)
-                $.msg($.name, `${name}`, `🎉用户 ${userCookie.id} 重复获取 cookie!`);
-                return
-            } else {
-                // 更新 cookie
-                YouZanCookie[existingIndex].data[index] = userCookie;
-                console.log(JSON.stringify(userCookie))
-                $.msg($.name, `${name}`, `🎉用户${userCookie.id}更新token成功!`);
-            }
+    const newData = {"userId": userId, "cookie": cookie, "token": token};
+    const index = WangYiYanXuan.findIndex(e => e.userId == newData.userId);
+    if (index !== -1) {
+        if (WangYiYanXuan[index].cookie == newData.cookie) {
+            return
         } else {
-            // 没有缓存该用户
-            YouZanCookie[existingIndex].data.push(userCookie)
-            console.log(JSON.stringify(userCookie))
-            $.msg($.name, `${name}`, `🎉新增用户${userCookie.id}成功!`);
+            WangYiYanXuan[index] = newData;
+            console.log(newData.cookie)
+            console.log(token)
+            $.msg($.name, `🎉用户${newData.userId}更新cookie成功!`, ``);
         }
-        
     } else {
-         // 未缓存该小程序
-        console.log($.name,`${name}`,"发现新的签到活动")
-        $.msg($.name, `${name}`,`🎉发现新的签到活动!`);
-        YouZanCookie.push(newData)
-        newData.data.push(userCookie)
-        console.log(JSON.stringify(userCookie))
-        $.msg($.name, `${name}`, `🎉新增用户${userCookie.id}成功!`);
+        WangYiYanXuan.push(newData)
+        console.log(newData.cookie)
+        console.log(token)
+        $.msg($.name, `🎉新增用户${newData.userId}成功!`, ``);
     }
-    $.setjson(YouZanCookie, "YouZanCookie");
-
-    // 执行签到测试
-    await main();
+    $.setjson(WangYiYanXuan, "WangYiYanXuan");
 }
 
-
-// 从 cookie 中提取指定的键
-function getCookieValue(cookieString,name) {
-    let nameEQ = name + "=";
-    let ca = cookieString.split(';');
-    for(let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
-}
-
-
-async function commonGet(url,cookie) {
+async function commonPost(url,body = {}) {
     return new Promise(resolve => {
         const options = {
-            url: `https://h5.youzan.com/wscump/checkin/checkinV2.json?${url}`,
+            url: `https://act.you.163.com${url}`,
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Linux; Android 10; 16th Build/QKQ1.191222.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36 XWEB/1160083 MMWEBSDK/20231202 MMWEBID/2933 MicroMessenger/8.0.47.2560(0x28002F50) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64 MiniProgramEnv/android',
-                'Content-Type': 'application/json',
-                'Accept-Encoding': 'gzip,compress,br,deflate',
-                'Cookie': cookie
+                'X-Requested-With' : `XMLHttpRequest`,
+                'x-csrf-token' : ``,
+                'Connection' : `keep-alive`,
+                'Accept-Encoding' : `gzip, deflate, br`,
+                'Content-Type' : `application/json`,
+                'Origin' : `https://act.you.163.com`,
+                'User-Agent' : `Mozilla/5.0 (iPhone; CPU iPhone OS 16_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 yanxuan/7.6.8 device-id/ed179fedbfda9a7c5c9d462616c7bd96 app-chan-id/AppStore trustId/ios_trustid_781b2e99fe3a488eab858e05e4d48d63`,
+                'Cookie' :cookie,
+                'Referer' : `https://act.you.163.com/act/pub/oly_RZXrqPgbLM483xa9.html`,
+                'Host' : `act.you.163.com`,
+                'Accept-Language' : `zh-CN,zh-Hans;q=0.9`,
+                'Accept' : `application/json, text/javascript, */*; q=0.01`
+            },
+            body:JSON.stringify(body)
+        }
+        $.post(options, async (err, resp, data) => {
+            try {
+                if (err) {
+                    console.log(`${JSON.stringify(err)}`)
+                    console.log(`${$.name} API请求失败，请检查网路重试`)
+                } else {
+                    await $.wait(2000);
+                    resolve(JSON.parse(data));
+                }
+            } catch (e) {
+                $.logErr(e, resp)
+            } finally {
+                resolve();
+            }
+        })
+    })
+}
+
+async function weChatGet(url) {
+    return new Promise(resolve => {
+        const options = {
+            url: `https://act.you.163.com${url}`,
+            headers: {
+                'X-Requested-With' : `XMLHttpRequest`,
+                'x-csrf-token' : ``,
+                'Connection' : `keep-alive`,
+                'Accept-Encoding' : `gzip, deflate, br`,
+                'Content-Type' : `application/json`,
+                'Origin' : `https://act.you.163.com`,
+                'User-Agent' : `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x6309092b) XWEB/9105`,
+                'Cookie' :cookie,
+                'Referer' : `https://act.you.163.com/act/pub/oly_RZXrqPgbLM483xa9.html`,
+                'Host' : `act.you.163.com`,
+                'Accept-Language' : `zh-CN,zh-Hans;q=0.9`,
+                'Accept' : `application/json, text/javascript, */*; q=0.01`
             }
         }
         $.get(options, async (err, resp, data) => {
@@ -160,6 +181,44 @@ async function commonGet(url,cookie) {
                     console.log(`${JSON.stringify(err)}`)
                     console.log(`${$.name} API请求失败，请检查网路重试`)
                 } else {
+                    await $.wait(2000);
+                    resolve(JSON.parse(data));
+                }
+            } catch (e) {
+                $.logErr(e, resp)
+            } finally {
+                resolve();
+            }
+        })
+    })
+}
+
+async function commonGet(url) {
+    return new Promise(resolve => {
+        const options = {
+            url: `https://act.you.163.com${url}`,
+            headers: {
+                'X-Requested-With' : `XMLHttpRequest`,
+                'x-csrf-token' : ``,
+                'Connection' : `keep-alive`,
+                'Accept-Encoding' : `gzip, deflate, br`,
+                'Content-Type' : `application/json`,
+                'Origin' : `https://act.you.163.com`,
+                'User-Agent' : `Mozilla/5.0 (iPhone; CPU iPhone OS 16_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 yanxuan/7.6.8 device-id/ed179fedbfda9a7c5c9d462616c7bd96 app-chan-id/AppStore trustId/ios_trustid_781b2e99fe3a488eab858e05e4d48d63`,
+                'Cookie' :cookie,
+                'Referer' : `https://act.you.163.com/act/pub/oly_RZXrqPgbLM483xa9.html`,
+                'Host' : `act.you.163.com`,
+                'Accept-Language' : `zh-CN,zh-Hans;q=0.9`,
+                'Accept' : `application/json, text/javascript, */*; q=0.01`
+            }
+        }
+        $.get(options, async (err, resp, data) => {
+            try {
+                if (err) {
+                    console.log(`${JSON.stringify(err)}`)
+                    console.log(`${$.name} API请求失败，请检查网路重试`)
+                } else {
+                    await $.wait(2000);
                     resolve(JSON.parse(data));
                 }
             } catch (e) {

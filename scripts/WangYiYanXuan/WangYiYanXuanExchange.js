@@ -1,104 +1,97 @@
-const $ = new Env('有赞');
-const YouZan = ($.isNode() ? JSON.parse(process.env.YouZan) : $.getjson("YouZan")) || [];
-let activityArr = [{"12063":"SKG会员商城"},{"99":"魅族商城Lite"},{"2162835":"PANDAER 会员商店"},{"3520910":"Achock官方商店"},{"2187565":"蜜蜂惊喜社"},{"2923467":"红之旗舰店"},{"2910869":"FicceCode菲诗蔻官方商城"},{"2386563":"HBN颜究所"},{"1597464":"Xbox 聚乐部"},{"3347128":"松鲜鲜调味品"},{"2299510":"燕京啤酒电商"},{"18415":"得宝Tempo"},{"18201":"小罐茶官方旗舰店"}];
-let notice = '';
+const $ = new Env('网易严选-兑换');
+let WangYiYanXuan = ($.isNode() ? process.env.WangYiYanXuan : $.getjson("WangYiYanXuan")) || [];
+//默认第一个用户兑换
+let WangYiYanXuanExchangeUser = ($.isNode() ? process.env.WangYiYanXuanExchangeUser : $.getdata("WangYiYanXuanExchangeUser")) || 0;
+let WangYiYanXuanExchangeGoodName = ($.isNode() ? process.env.WangYiYanXuanExchangeGoodName : $.getdata("WangYiYanXuanExchangeGoodName")) || '';
+let cookie=''
+let token = ''
 !(async () => {
-    if (typeof $request != "undefined") {
-        await getCookie();
-    } else {
-        await main();
-    }
+    await main();
 })().catch((e) => {$.log(e)}).finally(() => {$.done({});});
 
 async function main() {
-    console.log('作者：@xzxxn777\n频道：https://t.me/xzxxn777\n群组：https://t.me/xzxxn7777\n自用机场推荐：https://xn--diqv0fut7b.com\n')
-    for (const item of YouZan) {
-        let checkinId = item.checkinId;
-        let name = checkinId
-        if (activityArr.find(item => checkinId in item)) {
-            name = activityArr.find(item => checkinId in item)[checkinId];
-        }
-        console.log(name);
-        notice += `${name}\n`;
-        for (const data of item.data) {
-            let id = data.id, appId = data.appId, kdtId = data.kdtId, token = data.token, extraData = data.extraData;
-            console.log(`用户：${id}开始签到`)
-            let checkin = await commonGet(`checkinId=${checkinId}&app_id=${appId}&kdt_id=${kdtId}&access_token=${token}`,extraData);
-            if (checkin.code == -1) {
-                $.msg($.name, `${name} 用户：${id}`, `token已过期，请重新获取`);
-                continue
-            }
-            console.log(`签到结果:${checkin.msg}\n`)
-            notice += `用户:${id}  签到结果:${checkin.msg}\n`;
-        }
+    if (!WangYiYanXuanExchangeGoodName) {
+        $.msg($.name, '【提示】请先设置要兑换的商品名称');
+        return;
     }
-    if (notice) {
-        $.msg($.name, '', notice);
+    cookie = WangYiYanXuan[WangYiYanXuanExchangeUser].cookie;
+    userId = WangYiYanXuan[WangYiYanXuanExchangeUser].userId;
+    token = WangYiYanXuan[WangYiYanXuanExchangeUser].token;
+    console.log($.name,`用户：${userId}开始兑换`)
+    let index = await commonPost(`/xhr/points/index.json`);
+    let actId = index.data.pointExVirtualAct.actId;
+    let actType = index.data.pointExVirtualAct.actType;
+    for (const packet of index.data.pointExVirtualAct.actPackets) {
+        console.log(`${packet.title} 需要 ${packet.needPoint}积分`)
+        if (packet.title.includes(WangYiYanXuanExchangeGoodName)) {
+            let actPacketId = packet.actPacketId;
+            let actPacketGiftId = packet.actPacketGiftId;
+            let getActPacket = await commonGet(`/xhr/points/exVitrual/getActPacket.json?csrf_token=${token}&actId=${actId}&actPacketId=${actPacketId}&actPacketGiftId=${actPacketGiftId}&actType=${actType}`);
+            let activationCode = getActPacket.data.actiCode;
+            let activationType = getActPacket.data.actiType;
+            for (let i = 0; i < 30; i++) {
+                let exchange = await commonPost(`/xhr/points/exVitrual/pointExActivate.json?csrf_token=${token}`,`activationType=${activationType}&actType=${actType}&activationCode=${activationCode}&activationExt=%7B%22actId%22%3A${actId}%2C%22actPacketId%22%3A${actPacketId}%7D`);
+                console.log(exchange)
+            }
+        }
     }
 }
 
-async function getCookie() {
-    let extraData = $request.headers["extra-data"] || $request.headers["Extra-Data"];
-    if (!extraData) {
-        console.log('获取额外数据失败',$request.headers);
-        $.msg($.name, `${checkinId}`, '获取额外数据失败');
-        return
-    }
-    const urlStr = $request.url.split('?')[1];
-    let result = {};
-    let paramsArr = urlStr.split('&')
-    for(let i = 0,len = paramsArr.length;i < len;i++){
-        let arr = paramsArr[i].split('=')
-        result[arr[0]] = arr[1];
-    }
-    const checkinId = result.checkinId;
-    const appId = result.app_id;
-    const kdtId = result.kdt_id;
-    const token = result.access_token;
-    let body = JSON.parse(extraData);
-    const id = body.uuid;
-    const newData = {"checkinId": checkinId, "data": []};
-    const data = {"id": id, "appId": appId, "kdtId": kdtId, "token": token, "extraData":extraData};
-    const existingIndex = YouZan.findIndex(e => e.checkinId == newData.checkinId);
-    $.msg($.name, `${checkinId}`, `🎉用户${data.id}更新token成功!`);
-    if (existingIndex !== -1) {
-        const index = YouZan[existingIndex].data.findIndex(e => e.id == data.id);
-        if (index !== -1) {
-            if (YouZan[existingIndex].data[index].token == data.token) {
-                console.log(`${checkinId} 重复获取 cookie `,JSON.stringify(data))
-                $.msg($.name, `${checkinId}`, `🎉用户 ${data.id} 重复获取 cookie!`);
-                return
-            } else {
-                YouZan[existingIndex].data[index] = data;
-                console.log(JSON.stringify(data))
-                $.msg($.name, `${checkinId}`, `🎉用户${data.id}更新token成功!`);
-            }
-        } else {
-            YouZan[existingIndex].data.push(data)
-            console.log(JSON.stringify(data))
-            $.msg($.name, `${checkinId}`, `🎉新增用户${data.id}成功!`);
-        }
-    } else {
-        console.log("发现新的签到活动")
-        $.msg($.name, `🎉发现新的签到活动!`);
-        YouZan.push(newData)
-        newData.data.push(data)
-        console.log(JSON.stringify(data))
-        $.msg($.name, `${checkinId}`, `🎉新增用户${data.id}成功!`);
-    }
-    $.setjson(YouZan, "YouZan");
-}
-
-async function commonGet(url,extraData) {
+async function commonPost(url,body = '') {
     return new Promise(resolve => {
         const options = {
-            url: `https://h5.youzan.com/wscump/checkin/checkinV2.json?${url}`,
+            url: `https://m.you.163.com${url}`,
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Linux; Android 10; 16th Build/QKQ1.191222.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36 XWEB/1160083 MMWEBSDK/20231202 MMWEBID/2933 MicroMessenger/8.0.47.2560(0x28002F50) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64 MiniProgramEnv/android',
-                'Content-Type': 'application/json',
-                'Accept-Encoding': 'gzip,compress,br,deflate',
-                'Extra-Data': extraData
+                'Cookie': cookie,
+                'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                'Accept': 'application/json, text/javascript, */*; q=0.01',
+                'X-Requested-With': 'XMLHttpRequest',
+                'sec-fetch-site': 'same-origin',
+                'accept-language': 'zh-CN,zh-Hans;q=0.9',
+                'accept-encoding': 'gzip, deflate, br',
+                'sec-fetch-mode': 'cors',
+                'Origin': 'https://m.you.163.com',
+                'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 yanxuan/8.6.9 device-id/ed179fedbfda9a7c5c9d462616c7bd96 app-chan-id/AppStore trustId/ios_trustid_5fc3680071204fc09086a846a8fca7c3',
+                'referer': 'https://m.you.163.com/points/index',
+                'sec-fetch-dest': 'empty'
+            },
+            body:body
+        }
+        $.post(options, async (err, resp, data) => {
+            try {
+                if (err) {
+                    console.log(`${JSON.stringify(err)}`)
+                    console.log(`${$.name} API请求失败，请检查网路重试`)
+                } else {
+                    resolve(JSON.parse(data));
+                }
+            } catch (e) {
+                $.logErr(e, resp)
+            } finally {
+                resolve();
             }
+        })
+    })
+}
+
+async function commonGet(url) {
+    return new Promise(resolve => {
+        const options = {
+            url: `https://m.you.163.com${url}`,
+            headers: {
+                'Cookie': cookie,
+                'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                'Accept': 'application/json, text/javascript, */*; q=0.01',
+                'X-Requested-With': 'XMLHttpRequest',
+                'sec-fetch-site': 'same-origin',
+                'accept-language': 'zh-CN,zh-Hans;q=0.9',
+                'accept-encoding': 'gzip, deflate, br',
+                'sec-fetch-mode': 'cors',
+                'Origin': 'https://m.you.163.com',
+                'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 yanxuan/8.6.9 device-id/ed179fedbfda9a7c5c9d462616c7bd96 app-chan-id/AppStore trustId/ios_trustid_5fc3680071204fc09086a846a8fca7c3',
+                'referer': 'https://m.you.163.com/points/exVirtual/actPacket?actId=850&actPacketId=5878&actPacketGiftId=&actType=1&fromMiniapp=',
+                'sec-fetch-dest': 'empty'
+            },
         }
         $.get(options, async (err, resp, data) => {
             try {

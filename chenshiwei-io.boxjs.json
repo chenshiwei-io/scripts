@@ -93,6 +93,72 @@
         }
 
       ]
+    },
+    {
+      "id": "YouZan",
+      "name": "基于有赞的微信小程序积分 extra-data 签到",
+      "keys": [
+        "youzan",
+        "extra-data",
+        "score",
+        "daily_sign"
+      ],
+      "author": "chenshiwei-io",
+      "repo": "https://github.com/chenshiwei-io/boxjs/tree/master/scripts/YouZan",
+      "url": "https://github.com/chenshiwei-io/boxjs/tree/master/scripts/YouZan",
+      "script": "https://raw.githubusercontent.com/chenshiwei-io/boxjs/master/scripts/YouZan/YouZan.js",
+      "icons": [
+      ],
+      "tasks": [
+        {
+          "cron": "0 1 0,10 * * ?",
+          "script": "YouZan.js"
+        }
+      ],
+      "rewrites": [
+        {
+          "pattern": "^https?:\\/\\/h5\\.youzan\\.com\\/wscump\\/checkin\\/get_activity_by_yzuid_v2\\.json",
+          "type": "request",
+          "script": "YouZan.js",
+          "body": true          
+        }
+
+      ]
+    },
+    {
+      "id": "YouZan",
+      "name": "网易严选签到 && 积分兑换商品",
+      "keys": [
+        "youzan",
+        "extra-data",
+        "score",
+        "daily_sign"
+      ],
+      "author": "chenshiwei-io",
+      "repo": "https://github.com/chenshiwei-io/boxjs/tree/master/scripts/WangYiYanXuan",
+      "url": "https://github.com/chenshiwei-io/boxjs/tree/master/scripts/WangYiYanXuan",
+      "script": "https://raw.githubusercontent.com/chenshiwei-io/boxjs/master/scripts/WangYiYanXuan/WangYiYanXuan.js",
+      "icons": [
+      ],
+      "tasks": [
+        {
+          "cron": "45 0,11,21 * * *",
+          "script": "WangYiYanXuan.js"
+        },
+        {
+          "cron": "58 59 9 * * 4",
+          "script": "WangYiYanXuanExchange.js"
+        }
+      ],
+      "rewrites": [
+        {
+          "pattern": "^https:\\/\\/act\\.you\\.163\\.com\\/act-attendance\\/task\\/list",
+          "type": "request",
+          "script": "WangYiYanXuan.js",
+          "body": true          
+        }
+
+      ]
     }
   ]
 }

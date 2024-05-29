@@ -28,8 +28,36 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var $ = new Env('喜茶');
-var HeyTea = ($.isNode() ? process.env.HeyTea : $.getjson("HeyTea")) || [];
+var $ = new Env('有赞');
+var YouZan = ($.isNode() ? JSON.parse(process.env.YouZan) : $.getjson("YouZan")) || [];
+var activityArr = [{
+  "12063": "SKG会员商城"
+}, {
+  "99": "魅族商城Lite"
+}, {
+  "2162835": "PANDAER 会员商店"
+}, {
+  "3520910": "Achock官方商店"
+}, {
+  "2187565": "蜜蜂惊喜社"
+}, {
+  "2923467": "红之旗舰店"
+}, {
+  "2910869": "FicceCode菲诗蔻官方商城"
+}, {
+  "2386563": "HBN颜究所"
+}, {
+  "1597464": "Xbox 聚乐部"
+}, {
+  "3347128": "松鲜鲜调味品"
+}, {
+  "2299510": "燕京啤酒电商"
+}, {
+  "18415": "得宝Tempo"
+}, {
+  "18201": "小罐茶官方旗舰店"
+}];
+var notice = '';
 !function _callee() {
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
@@ -64,338 +92,335 @@ var HeyTea = ($.isNode() ? process.env.HeyTea : $.getjson("HeyTea")) || [];
 });
 
 function main() {
-  var _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, account, sign, info, _info;
+  var _iteratorNormalCompletion, _didIteratorError, _iteratorError, _loop, _iterator, _step;
 
-  return regeneratorRuntime.async(function main$(_context2) {
+  return regeneratorRuntime.async(function main$(_context3) {
     while (1) {
-      switch (_context2.prev = _context2.next) {
+      switch (_context3.prev = _context3.next) {
         case 0:
           _iteratorNormalCompletion = true;
           _didIteratorError = false;
           _iteratorError = undefined;
-          _context2.prev = 3;
-          _iterator = HeyTea[Symbol.iterator]();
+          _context3.prev = 3;
 
-        case 5:
+          _loop = function _loop() {
+            var item, checkinId, name, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, data, id, appId, kdtId, token, extraData, checkin;
+
+            return regeneratorRuntime.async(function _loop$(_context2) {
+              while (1) {
+                switch (_context2.prev = _context2.next) {
+                  case 0:
+                    item = _step.value;
+                    checkinId = item.checkinId;
+                    name = checkinId;
+
+                    if (activityArr.find(function (item) {
+                      return checkinId in item;
+                    })) {
+                      name = activityArr.find(function (item) {
+                        return checkinId in item;
+                      })[checkinId];
+                    }
+
+                    console.log(name);
+                    notice += "".concat(name, "\n");
+                    _iteratorNormalCompletion2 = true;
+                    _didIteratorError2 = false;
+                    _iteratorError2 = undefined;
+                    _context2.prev = 9;
+                    _iterator2 = item.data[Symbol.iterator]();
+
+                  case 11:
+                    if (_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done) {
+                      _context2.next = 26;
+                      break;
+                    }
+
+                    data = _step2.value;
+                    id = data.id, appId = data.appId, kdtId = data.kdtId, token = data.token, extraData = data.extraData;
+                    console.log("\u7528\u6237\uFF1A".concat(id, "\u5F00\u59CB\u7B7E\u5230"));
+                    _context2.next = 17;
+                    return regeneratorRuntime.awrap(commonGet("checkinId=".concat(checkinId, "&app_id=").concat(appId, "&kdt_id=").concat(kdtId, "&access_token=").concat(token), extraData));
+
+                  case 17:
+                    checkin = _context2.sent;
+
+                    if (!(checkin.code == -1)) {
+                      _context2.next = 21;
+                      break;
+                    }
+
+                    $.msg($.name, "".concat(name, " \u7528\u6237\uFF1A").concat(id), "token\u5DF2\u8FC7\u671F\uFF0C\u8BF7\u91CD\u65B0\u83B7\u53D6");
+                    return _context2.abrupt("continue", 23);
+
+                  case 21:
+                    console.log("\u7B7E\u5230\u7ED3\u679C:".concat(checkin.msg, "\n"));
+                    notice += "\u7528\u6237:".concat(id, "  \u7B7E\u5230\u7ED3\u679C:").concat(checkin.msg, "\n");
+
+                  case 23:
+                    _iteratorNormalCompletion2 = true;
+                    _context2.next = 11;
+                    break;
+
+                  case 26:
+                    _context2.next = 32;
+                    break;
+
+                  case 28:
+                    _context2.prev = 28;
+                    _context2.t0 = _context2["catch"](9);
+                    _didIteratorError2 = true;
+                    _iteratorError2 = _context2.t0;
+
+                  case 32:
+                    _context2.prev = 32;
+                    _context2.prev = 33;
+
+                    if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
+                      _iterator2["return"]();
+                    }
+
+                  case 35:
+                    _context2.prev = 35;
+
+                    if (!_didIteratorError2) {
+                      _context2.next = 38;
+                      break;
+                    }
+
+                    throw _iteratorError2;
+
+                  case 38:
+                    return _context2.finish(35);
+
+                  case 39:
+                    return _context2.finish(32);
+
+                  case 40:
+                  case "end":
+                    return _context2.stop();
+                }
+              }
+            }, null, null, [[9, 28, 32, 40], [33,, 35, 39]]);
+          };
+
+          _iterator = YouZan[Symbol.iterator]();
+
+        case 6:
           if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
-            _context2.next = 36;
+            _context3.next = 12;
             break;
           }
 
-          account = _step.value;
-          headers = {
-            'x-version': '5.1.30',
-            'accept-encoding': 'Gzip',
-            'accept-language': 'zh-CN',
-            'authorization': account.authorization,
-            'client': '1',
-            'x-client': 'weapp',
-            'x-region-id': '10',
-            'current-page': '/pages/member/mission_center/index',
-            'client-version': '2.236.0.p1',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x6309092b) XWEB/9079',
-            'content-type': 'application/json',
-            'region': '1',
-            'accept': 'application/prs.heytea.v1+json',
-            'xweb_xhr': '1',
-            'gmt-zone': '+08:00',
-            'version': '5.1.30',
-            'sec-fetch-site': 'cross-site',
-            'sec-fetch-mode': 'cors',
-            'sec-fetch-dest': 'empty',
-            'referer': 'https://servicewechat.com/wx696a42df4f2456d3/1012/page-frame.html'
-          };
-          console.log("\u7528\u6237\uFF1A".concat(account.userId, "\u5F00\u59CB\u4EFB\u52A1")); //签到
+          _context3.next = 9;
+          return regeneratorRuntime.awrap(_loop());
 
-          console.log("开始签到");
-          _context2.next = 12;
-          return regeneratorRuntime.awrap(commonPost("/award/114"));
+        case 9:
+          _iteratorNormalCompletion = true;
+          _context3.next = 6;
+          break;
 
         case 12:
-          sign = _context2.sent;
-
-          if (!(sign.code == 400045)) {
-            _context2.next = 22;
-            break;
-          }
-
-          _context2.next = 16;
-          return regeneratorRuntime.awrap(commonGet("/member"));
-
-        case 16:
-          info = _context2.sent;
-          console.log("\u62E5\u6709\u79EF\u5206: ".concat(info.data.usableScore));
-          $.msg($.name, "\uD83C\uDF89\u7528\u6237\uFF1A".concat(account.userId), "".concat(sign.msg, " \u62E5\u6709\u79EF\u5206: ").concat(info.data.usableScore));
-          return _context2.abrupt("return");
-
-        case 22:
-          if (!(sign.code == 0)) {
-            _context2.next = 30;
-            break;
-          }
-
-          _context2.next = 25;
-          return regeneratorRuntime.awrap(commonGet("/member"));
-
-        case 25:
-          _info = _context2.sent;
-          console.log("\u62E5\u6709\u79EF\u5206: ".concat(_info.data.usableScore));
-          $.msg($.name, "\uD83C\uDF89\u7528\u6237\uFF1A".concat(account.userId), "".concat(sign.msg, " \u62E5\u6709\u79EF\u5206: ").concat(_info.data.usableScore));
-          _context2.next = 31;
+          _context3.next = 18;
           break;
 
-        case 30:
-          $.msg($.name, "\u274C\u7528\u6237\uFF1A".concat(account.userId), "".concat(sign.msg));
-
-        case 31:
-          // 
-          console.log("更新 token");
-          getCookie();
-
-        case 33:
-          _iteratorNormalCompletion = true;
-          _context2.next = 5;
-          break;
-
-        case 36:
-          _context2.next = 42;
-          break;
-
-        case 38:
-          _context2.prev = 38;
-          _context2.t0 = _context2["catch"](3);
+        case 14:
+          _context3.prev = 14;
+          _context3.t0 = _context3["catch"](3);
           _didIteratorError = true;
-          _iteratorError = _context2.t0;
+          _iteratorError = _context3.t0;
 
-        case 42:
-          _context2.prev = 42;
-          _context2.prev = 43;
+        case 18:
+          _context3.prev = 18;
+          _context3.prev = 19;
 
           if (!_iteratorNormalCompletion && _iterator["return"] != null) {
             _iterator["return"]();
           }
 
-        case 45:
-          _context2.prev = 45;
+        case 21:
+          _context3.prev = 21;
 
           if (!_didIteratorError) {
-            _context2.next = 48;
+            _context3.next = 24;
             break;
           }
 
           throw _iteratorError;
 
-        case 48:
-          return _context2.finish(45);
-
-        case 49:
-          return _context2.finish(42);
-
-        case 50:
-        case "end":
-          return _context2.stop();
-      }
-    }
-  }, null, null, [[3, 38, 42, 50], [43,, 45, 49]]);
-}
-
-function getCookie() {
-  var authorization, body, userId, newData, index;
-  return regeneratorRuntime.async(function getCookie$(_context3) {
-    while (1) {
-      switch (_context3.prev = _context3.next) {
-        case 0:
-          authorization = $request.headers["authorization"] || $request.headers["Authorization"];
-
-          if (authorization) {
-            _context3.next = 5;
-            break;
-          }
-
-          $.msg($.name, "\u274C \u811A\u672C\u5931\u6548\uFF0CHeaders Authorization \u5B57\u6BB5\u65E0\u6548", "");
-          console.log("❌ 脚本失效，Headers Authorization 字段无效", $request.headers);
-          return _context3.abrupt("return");
-
-        case 5:
-          body = $.toObj($response.body);
-          console.log("\u7528\u6237", body.data);
-          userId = body.data.userMainId;
-          newData = {
-            "userId": userId,
-            "authorization": authorization
-          };
-          index = HeyTea.findIndex(function (e) {
-            return e.userId == newData.userId;
-          });
-
-          if (!(index !== -1)) {
-            _context3.next = 22;
-            break;
-          }
-
-          if (!(HeyTea[index].authorization === newData.authorization)) {
-            _context3.next = 16;
-            break;
-          }
-
-          $.msg($.name, "\uD83C\uDF89\u7528\u6237".concat(newData.userId, " token\u5DF2\u5B58\u5728\uFF0C\u8DF3\u8FC7\u66F4\u65B0"), "");
-          return _context3.abrupt("return");
-
-        case 16:
-          console.log("更新 before", HeyTea[index]);
-          HeyTea[index] = newData;
-          console.log("更新 after", HeyTea[index]);
-          $.msg($.name, "\uD83C\uDF89\u7528\u6237".concat(newData.userId, "\u66F4\u65B0token\u6210\u529F!"), "");
-
-        case 20:
-          _context3.next = 25;
-          break;
-
-        case 22:
-          HeyTea.push(newData);
-          console.log(newData.authorization);
-          $.msg($.name, "\uD83C\uDF89\u65B0\u589E\u7528\u6237".concat(newData.userId, "\u6210\u529F!"), "");
+        case 24:
+          return _context3.finish(21);
 
         case 25:
-          $.setjson(HeyTea, "HeyTea");
+          return _context3.finish(18);
 
         case 26:
+          if (notice) {
+            $.msg($.name, '', notice);
+          }
+
+        case 27:
         case "end":
           return _context3.stop();
       }
     }
-  });
+  }, null, null, [[3, 14, 18, 26], [19,, 21, 25]]);
 }
 
-function commonPost(url) {
-  var body,
-      _args5 = arguments;
-  return regeneratorRuntime.async(function commonPost$(_context5) {
+function getCookie() {
+  var extraData, urlStr, result, paramsArr, i, len, arr, checkinId, appId, kdtId, token, body, id, newData, data, existingIndex, index;
+  return regeneratorRuntime.async(function getCookie$(_context4) {
     while (1) {
-      switch (_context5.prev = _context5.next) {
+      switch (_context4.prev = _context4.next) {
         case 0:
-          body = _args5.length > 1 && _args5[1] !== undefined ? _args5[1] : {};
-          return _context5.abrupt("return", new Promise(function (resolve) {
-            var options = {
-              url: "https://vip.heytea.com/api/service-member/vip/task".concat(url),
-              headers: headers,
-              body: JSON.stringify(body)
-            };
-            $.post(options, function _callee2(err, resp, data) {
-              return regeneratorRuntime.async(function _callee2$(_context4) {
-                while (1) {
-                  switch (_context4.prev = _context4.next) {
-                    case 0:
-                      _context4.prev = 0;
+          extraData = $request.headers["extra-data"] || $request.headers["Extra-Data"];
 
-                      if (!err) {
-                        _context4.next = 6;
-                        break;
-                      }
+          if (extraData) {
+            _context4.next = 5;
+            break;
+          }
 
-                      console.log("".concat(JSON.stringify(err)));
-                      console.log("".concat($.name, " API\u8BF7\u6C42\u5931\u8D25\uFF0C\u8BF7\u68C0\u67E5\u7F51\u8DEF\u91CD\u8BD5"));
-                      _context4.next = 9;
-                      break;
+          console.log('获取额外数据失败', $request.headers);
+          $.msg($.name, "".concat(checkinId), '获取额外数据失败');
+          return _context4.abrupt("return");
 
-                    case 6:
-                      _context4.next = 8;
-                      return regeneratorRuntime.awrap($.wait(5000));
+        case 5:
+          urlStr = $request.url.split('?')[1];
+          result = {};
+          paramsArr = urlStr.split('&');
 
-                    case 8:
-                      resolve(JSON.parse(data));
+          for (i = 0, len = paramsArr.length; i < len; i++) {
+            arr = paramsArr[i].split('=');
+            result[arr[0]] = arr[1];
+          }
 
-                    case 9:
-                      _context4.next = 14;
-                      break;
+          checkinId = result.checkinId;
+          appId = result.app_id;
+          kdtId = result.kdt_id;
+          token = result.access_token;
+          body = JSON.parse(extraData);
+          id = body.uuid;
+          newData = {
+            "checkinId": checkinId,
+            "data": []
+          };
+          data = {
+            "id": id,
+            "appId": appId,
+            "kdtId": kdtId,
+            "token": token,
+            "extraData": extraData
+          };
+          existingIndex = YouZan.findIndex(function (e) {
+            return e.checkinId == newData.checkinId;
+          });
+          $.msg($.name, "".concat(checkinId), "\uD83C\uDF89\u7528\u6237".concat(data.id, "\u66F4\u65B0token\u6210\u529F!"));
 
-                    case 11:
-                      _context4.prev = 11;
-                      _context4.t0 = _context4["catch"](0);
-                      $.logErr(_context4.t0, resp);
+          if (!(existingIndex !== -1)) {
+            _context4.next = 38;
+            break;
+          }
 
-                    case 14:
-                      _context4.prev = 14;
-                      resolve();
-                      return _context4.finish(14);
+          index = YouZan[existingIndex].data.findIndex(function (e) {
+            return e.id == data.id;
+          });
 
-                    case 17:
-                    case "end":
-                      return _context4.stop();
-                  }
-                }
-              }, null, null, [[0, 11, 14, 17]]);
-            });
-          }));
+          if (!(index !== -1)) {
+            _context4.next = 33;
+            break;
+          }
 
-        case 2:
+          if (!(YouZan[existingIndex].data[index].token == data.token)) {
+            _context4.next = 28;
+            break;
+          }
+
+          console.log("".concat(checkinId, " \u91CD\u590D\u83B7\u53D6 cookie "), JSON.stringify(data));
+          $.msg($.name, "".concat(checkinId), "\uD83C\uDF89\u7528\u6237 ".concat(data.id, " \u91CD\u590D\u83B7\u53D6 cookie!"));
+          return _context4.abrupt("return");
+
+        case 28:
+          YouZan[existingIndex].data[index] = data;
+          console.log(JSON.stringify(data));
+          $.msg($.name, "".concat(checkinId), "\uD83C\uDF89\u7528\u6237".concat(data.id, "\u66F4\u65B0token\u6210\u529F!"));
+
+        case 31:
+          _context4.next = 36;
+          break;
+
+        case 33:
+          YouZan[existingIndex].data.push(data);
+          console.log(JSON.stringify(data));
+          $.msg($.name, "".concat(checkinId), "\uD83C\uDF89\u65B0\u589E\u7528\u6237".concat(data.id, "\u6210\u529F!"));
+
+        case 36:
+          _context4.next = 44;
+          break;
+
+        case 38:
+          console.log("发现新的签到活动");
+          $.msg($.name, "\uD83C\uDF89\u53D1\u73B0\u65B0\u7684\u7B7E\u5230\u6D3B\u52A8!");
+          YouZan.push(newData);
+          newData.data.push(data);
+          console.log(JSON.stringify(data));
+          $.msg($.name, "".concat(checkinId), "\uD83C\uDF89\u65B0\u589E\u7528\u6237".concat(data.id, "\u6210\u529F!"));
+
+        case 44:
+          $.setjson(YouZan, "YouZan");
+
+        case 45:
         case "end":
-          return _context5.stop();
+          return _context4.stop();
       }
     }
   });
 }
 
-function commonGet(url) {
-  return regeneratorRuntime.async(function commonGet$(_context7) {
+function commonGet(url, extraData) {
+  return regeneratorRuntime.async(function commonGet$(_context6) {
     while (1) {
-      switch (_context7.prev = _context7.next) {
+      switch (_context6.prev = _context6.next) {
         case 0:
-          return _context7.abrupt("return", new Promise(function (resolve) {
+          return _context6.abrupt("return", new Promise(function (resolve) {
             var options = {
-              url: "https://vip.heytea.com/api/service-member/vip/task".concat(url),
-              headers: headers
+              url: "https://h5.youzan.com/wscump/checkin/checkinV2.json?".concat(url),
+              headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 10; 16th Build/QKQ1.191222.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36 XWEB/1160083 MMWEBSDK/20231202 MMWEBID/2933 MicroMessenger/8.0.47.2560(0x28002F50) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64 MiniProgramEnv/android',
+                'Content-Type': 'application/json',
+                'Accept-Encoding': 'gzip,compress,br,deflate',
+                'Extra-Data': extraData
+              }
             };
-            $.get(options, function _callee3(err, resp, data) {
-              return regeneratorRuntime.async(function _callee3$(_context6) {
+            $.get(options, function _callee2(err, resp, data) {
+              return regeneratorRuntime.async(function _callee2$(_context5) {
                 while (1) {
-                  switch (_context6.prev = _context6.next) {
+                  switch (_context5.prev = _context5.next) {
                     case 0:
-                      _context6.prev = 0;
-
-                      if (!err) {
-                        _context6.next = 6;
-                        break;
+                      try {
+                        if (err) {
+                          console.log("".concat(JSON.stringify(err)));
+                          console.log("".concat($.name, " API\u8BF7\u6C42\u5931\u8D25\uFF0C\u8BF7\u68C0\u67E5\u7F51\u8DEF\u91CD\u8BD5"));
+                        } else {
+                          resolve(JSON.parse(data));
+                        }
+                      } catch (e) {
+                        $.logErr(e, resp);
+                      } finally {
+                        resolve();
                       }
 
-                      console.log("".concat(JSON.stringify(err)));
-                      console.log("".concat($.name, " API\u8BF7\u6C42\u5931\u8D25\uFF0C\u8BF7\u68C0\u67E5\u7F51\u8DEF\u91CD\u8BD5"));
-                      _context6.next = 9;
-                      break;
-
-                    case 6:
-                      _context6.next = 8;
-                      return regeneratorRuntime.awrap($.wait(5000));
-
-                    case 8:
-                      resolve(JSON.parse(data));
-
-                    case 9:
-                      _context6.next = 14;
-                      break;
-
-                    case 11:
-                      _context6.prev = 11;
-                      _context6.t0 = _context6["catch"](0);
-                      $.logErr(_context6.t0, resp);
-
-                    case 14:
-                      _context6.prev = 14;
-                      resolve();
-                      return _context6.finish(14);
-
-                    case 17:
+                    case 1:
                     case "end":
-                      return _context6.stop();
+                      return _context5.stop();
                   }
                 }
-              }, null, null, [[0, 11, 14, 17]]);
+              });
             });
           }));
 
         case 1:
         case "end":
-          return _context7.stop();
+          return _context6.stop();
       }
     }
   });
@@ -624,26 +649,26 @@ function Env(t, e) {
       value: function lodash_get(t, e, s) {
         var a = e.replace(/\[(\d+)\]/g, ".$1").split(".");
         var r = t;
-        var _iteratorNormalCompletion2 = true;
-        var _didIteratorError2 = false;
-        var _iteratorError2 = undefined;
+        var _iteratorNormalCompletion3 = true;
+        var _didIteratorError3 = false;
+        var _iteratorError3 = undefined;
 
         try {
-          for (var _iterator2 = a[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-            var _t3 = _step2.value;
+          for (var _iterator3 = a[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+            var _t3 = _step3.value;
             if (r = Object(r)[_t3], void 0 === r) return s;
           }
         } catch (err) {
-          _didIteratorError2 = true;
-          _iteratorError2 = err;
+          _didIteratorError3 = true;
+          _iteratorError3 = err;
         } finally {
           try {
-            if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
-              _iterator2["return"]();
+            if (!_iteratorNormalCompletion3 && _iterator3["return"] != null) {
+              _iterator3["return"]();
             }
           } finally {
-            if (_didIteratorError2) {
-              throw _iteratorError2;
+            if (_didIteratorError3) {
+              throw _iteratorError3;
             }
           }
         }
