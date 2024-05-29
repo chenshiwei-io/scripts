@@ -1,18 +1,4 @@
-/* 
 
-脚本功能: 获取霸王茶姬小程序Qm-User-Token
-用户信息获取方式: 
-    微信霸王茶姬小程序 --> 我的
-    用户信息获取成功后可禁用此脚本
-
-[rewrite local]
-//^https?:\/\/webapi\.qmai\.cn\/web\/catering\/integral\/sign\/signIn url script-request-body https://raw.githubusercontent.com/Guding88/Script/main/bawangchaji/bwcj_token.js
-^https?:\/\/(webapi|qmwebapi)\.qmai\.cn\/web\/(catering2-apiserver\/customer-suggest\/query-feedback-config|catering\/crm\/points-info) url script-request-header https://raw.githubusercontent.com/Guding88/Script/main/bawangchaji/bwcj_token.js
-
-[MITM]
-hostname = qmwebapi.qmai.cn, webapi.qmai.cn
-
-*/
 const $ = new Env("🥤霸王茶姬token");
 const url = $request.url;
 const bwtoken = $.getdata("bw_token") ? $.getdata("bw_token") : "";

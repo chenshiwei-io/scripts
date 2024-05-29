@@ -4,7 +4,7 @@ const bwtoken = $.getdata("bw_token");
 //const bwbody = $.getdata("bw_body");
 
 const bw = {
-  url: "https://webapi2.qmai.cn/web/catering/integral/sign/signIn",
+  url: "https://webapi2.qmai.cn/web/cmk-center/sign/takePartInSign",
   headers: {
     'Accept-Encoding' : `gzip,compress,br,deflate`,
     'Qm-From' : `wechat`,
@@ -28,7 +28,7 @@ const bw = {
     'Content-Length' : '122',
     'channelCode' : ''
   },
-  body: `{"activityId":"100820000000000686","mobilePhone":"18888888888","userName":"骨钉","appid":"wxafec6f8422cb357b"}`,
+  body: `{"activityId":"947079313798000641","appid":"wxafec6f8422cb357b"}`,
 };
 
 (async () => {
