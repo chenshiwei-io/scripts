@@ -16,7 +16,7 @@ async function getCookie() {
       return
   }
   $.setval(bwtoken, "bw_token");
-  notice += "🎉用户信息获取成功！\n";
+  $.msg($.name, `🎉用户信息获取成功！`, bwtoken);
 }
 
 // prettier-ignore
