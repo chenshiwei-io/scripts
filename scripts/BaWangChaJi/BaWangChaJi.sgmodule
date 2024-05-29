@@ -3,7 +3,7 @@
 #!desc=霸王茶姬小程序积分签到
 
 [Script]
-霸王茶姬token = type=http-request,pattern=^https?:\/\/webapi2\.qmai\.cn\/web\/cmk-center\/sign,requires-body=0,max-size=0,script-path=https://raw.githubusercontent.com/chenshiwei-io/scripts/master/scripts/BaWangChaJi/bwcj_token.js
+霸王茶姬token = type=http-request,pattern=^https?:\/\/webapi2\.qmai\.cn\/web\/cmk-center\/common\/getCrmAvailablePoints,requires-body=0,max-size=0,script-path=https://raw.githubusercontent.com/chenshiwei-io/scripts/master/scripts/BaWangChaJi/bwcj_token.js
 霸王茶姬小程序签到 = type=cron,cronexp=00 00 10 * * *,script-path=https://raw.githubusercontent.com/chenshiwei-io/scripts/master/scripts/BaWangChaJi/bwcj.js,script-update-interval=0
 霸王茶姬小程序签到2024 = type=cron,cronexp=02 00 10 * * *,script-path=https://raw.githubusercontent.com/chenshiwei-io/scripts/master/scripts/BaWangChaJi/bwcj2024.js,script-update-interval=0
 
