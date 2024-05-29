@@ -1,7 +1,7 @@
 const $ = new Env("🥤霸王茶姬小程序签到2024");
 const bwtoken = $.getdata("bw_token");
 const bw2024 = {
-  url: "https://webapi.qmai.cn/web/cmk-center/sign/takePartInSign",
+  url: "https://webapi2.qmai.cn/web/cmk-center/sign/takePartInSign",
   headers: {
     'Connection' : `keep-alive`,
     'Accept-Encoding' : `gzip,compress,br,deflate`,
