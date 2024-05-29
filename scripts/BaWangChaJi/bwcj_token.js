@@ -2,9 +2,8 @@ const $ = new Env('🥤霸王茶姬token');
 !(async () => {
     if (typeof $request != "undefined") {
         await getCookie();
-    } else {
-        await main();
-    }
+    } 
+    
 })().catch((e) => {$.log(e)}).finally(() => {$.done({});});
 
 
