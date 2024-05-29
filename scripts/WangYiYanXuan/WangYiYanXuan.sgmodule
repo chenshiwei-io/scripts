@@ -3,9 +3,9 @@
 #!category=羊毛
 
 [Script]
-网易严选_获取cookie = type=http-request,pattern=^https:\/\/act\.you\.163\.com\/act-attendance\/task\/list,script-path=https://raw.githubusercontent.com/chenshiwei-io/scripts//master/scripts/WangYiYanXuan.js,requires-body=1,max-size=0
-网易严选 = type=cron,cronexp="45 0,11,21 * * *",script-path=https://raw.githubusercontent.com/chenshiwei-io/scripts//master/scripts/WangYiYanXuan/WangYiYanXuan.js,script-update-interval=0,timeout=3600,wake-system=1,engine=jsc
-网易严选-兑换 = type=cron,cronexp="58 59 9 * * 4",script-path=https://raw.githubusercontent.com/chenshiwei-io/scripts//master/scripts/WangYiYanXuan/WangYiYanXuanExchange.js,script-update-interval=0,timeout=3600,wake-system=1,engine=jsc
+网易严选_获取cookie = type=http-request,pattern=^https:\/\/act\.you\.163\.com\/act-attendance\/task\/list,script-path=https://raw.githubusercontent.com/chenshiwei-io/scripts/master/scripts/WangYiYanXuan.js,requires-body=1,max-size=0
+网易严选 = type=cron,cronexp="45 0,11,21 * * *",script-path=https://raw.githubusercontent.com/chenshiwei-io/scripts/master/scripts/WangYiYanXuan/WangYiYanXuan.js,script-update-interval=0,timeout=3600,wake-system=1,engine=jsc
+网易严选-兑换 = type=cron,cronexp="58 59 9 * * 4",script-path=https://raw.githubusercontent.com/chenshiwei-io/scripts/master/scripts/WangYiYanXuan/WangYiYanXuanExchange.js,script-update-interval=0,timeout=3600,wake-system=1,engine=jsc
 
 [MITM]
 hostname = %APPEND% act.you.163.com
