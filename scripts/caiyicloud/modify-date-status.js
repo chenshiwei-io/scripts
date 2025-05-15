@@ -6,6 +6,8 @@ const $ = new Env('巢票赛眼');
         var path = $request.url.path;
 
         var obj = JSON.parse(body);
+
+        $.msg($.name, `match 购票日期状态 url`, `sessions`);
         //未开通试用
         if (path.includes('/cyy_gatewayapi/show/pub/v5/show/') && path.endsWith('sessions')) {
             
