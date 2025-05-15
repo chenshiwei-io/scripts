@@ -1,7 +1,7 @@
 #!name=caiyicloud
 #!desc=caiyicloud
 #!category=抢票
-#!version=v1.0.3
+#!version=v1.0.4
 
 [Script]
 修改日期购票状态 = type=http-response,requires-body=true,timeout=10,debug=false,enable=true,pattern=^https?:\/\/65e55e9af2613e0001c1da18\.caiyicloud\.com\/cyy_gatewayapi\/show\/pub\/v5\/show\/[^\/]+\/sessions\?.*,script-path=https://raw.githubusercontent.com/chenshiwei-io/scripts/master/scripts/caiyicloud/modify-date-status.js
