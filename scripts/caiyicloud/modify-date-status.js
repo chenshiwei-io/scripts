@@ -7,7 +7,7 @@ const $ = new Env('巢票赛眼');
 
         var obj = JSON.parse(body);
 
-        $.msg($.name, `match 购票日期状态 url`, `sessions`);
+        $.msg($.name, `match 购票日期状态 url`, `sessions: ${path} ${url.includes('/cyy_gatewayapi/show/pub/v5/show/')} ${path.includes('/cyy_gatewayapi/show/pub/v5/show/')  && path.endsWith('sessions')}`);
         //未开通试用
         if (path.includes('/cyy_gatewayapi/show/pub/v5/show/') && path.endsWith('sessions')) {
             
