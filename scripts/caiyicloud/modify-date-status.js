@@ -3,26 +3,25 @@ const $ = new Env('巢票赛眼');
     if (typeof $request != "undefined") {
         var body = $response.body;
         var url = $request.url;
-        var path = $request.url.path;
+
+        let path = new URL(url).pathname;
 
         var obj = JSON.parse(body);
 
-        $.msg($.name, `match 购票日期状态 url`, `sessions: ${path} ${url.includes('/cyy_gatewayapi/show/pub/v5/show/')} ${path.includes('/cyy_gatewayapi/show/pub/v5/show/')  && path.endsWith('sessions')}`);
-        //未开通试用
+        $.msg($.name, `match 购票日期状态 url`, `${path}`);
+        var showname = ""
+        // 判断是否为购票日期状态接口
         if (path.includes('/cyy_gatewayapi/show/pub/v5/show/') && path.endsWith('sessions')) {
-            
-                var showname = ""
-                if (Array.isArray(obj.data)) {
-                    for (var i = 0; i < obj.data.length; i++) {
-                        obj.data[i].sessionStatus = 'ON_SALE'
-                        obj.data[i].sessionName = obj.data[i].sessionName+'~'
-                        showname = obj.data[i].showName
-                    }
+            if (Array.isArray(obj.data)) {
+                for (let i = 0; i < obj.data.length; i++) {
+                    obj.data[i].sessionStatus = 'ON_SALE';
+                    obj.data[i].sessionName += '~';
+                    showname = obj.data[i].showName
                 }
-                $.msg($.name, `购票日期状态`, `已修改为：ON_SALE~`);
-
+            }
+            $.msg($.name, `购票日期状态`, `已修改为：ON_SALE~`);
         }
-
+    
         body = JSON.stringify(obj);
         $done({ body, url });
     }
