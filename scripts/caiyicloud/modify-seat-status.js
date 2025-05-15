@@ -6,7 +6,7 @@ const $ = new Env('巢票赛眼');
         // let path = new URL(url).pathname;
 
 
-        $.msg($.name, `match 可预定票数 url`, `${url}`);
+        // $.msg($.name, `match 可预定票数 url`, `${url}`);
         var obj = JSON.parse(body);
         //未开通试用
         // if (path.includes('/cyy_gatewayapi/show/pub/v5/show/') && path.endsWith('seat_plans')) {

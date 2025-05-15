@@ -8,7 +8,7 @@ const $ = new Env('巢票赛眼');
 
         var obj = JSON.parse(body);
 
-        $.msg($.name, `match 购票日期状态 url`, `${url}`);
+        // $.msg($.name, `match 购票日期状态 url`, `${url}`);
         var showname = ""
         // 判断是否为购票日期状态接口
         // if (path.includes('/cyy_gatewayapi/show/pub/v5/show/') && path.endsWith('sessions')) {
@@ -19,7 +19,7 @@ const $ = new Env('巢票赛眼');
                     showname = obj.data[i].showName
                 }
             }
-            $.msg($.name, `购票日期状态`, `已修改为：ON_SALE~`);
+            $.msg($.name, `${showname}`, `购票日期状态已修改为：ON_SALE~`);
         // }
     
         body = JSON.stringify(obj);
