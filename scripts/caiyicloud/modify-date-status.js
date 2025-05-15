@@ -4,14 +4,14 @@ const $ = new Env('巢票赛眼');
         var body = $response.body;
         var url = $request.url;
 
-        let path = new URL(url).pathname;
+        // let path = new URL(url).pathname;
 
         var obj = JSON.parse(body);
 
-        $.msg($.name, `match 购票日期状态 url`, `${path}`);
+        $.msg($.name, `match 购票日期状态 url`, `${url}`);
         var showname = ""
         // 判断是否为购票日期状态接口
-        if (path.includes('/cyy_gatewayapi/show/pub/v5/show/') && path.endsWith('sessions')) {
+        // if (path.includes('/cyy_gatewayapi/show/pub/v5/show/') && path.endsWith('sessions')) {
             if (Array.isArray(obj.data)) {
                 for (let i = 0; i < obj.data.length; i++) {
                     obj.data[i].sessionStatus = 'ON_SALE';
@@ -20,7 +20,7 @@ const $ = new Env('巢票赛眼');
                 }
             }
             $.msg($.name, `购票日期状态`, `已修改为：ON_SALE~`);
-        }
+        // }
     
         body = JSON.stringify(obj);
         $done({ body, url });

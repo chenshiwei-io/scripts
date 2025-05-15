@@ -3,20 +3,20 @@ const $ = new Env('巢票赛眼');
     if (typeof $request != "undefined") {
         var body = $response.body;
         var url = $request.url;
-        let path = new URL(url).pathname;
+        // let path = new URL(url).pathname;
 
 
-        $.msg($.name, `match 可预定票数 url`, `${path}`);
+        $.msg($.name, `match 可预定票数 url`, `${url}`);
         var obj = JSON.parse(body);
         //未开通试用
-        if (path.includes('/cyy_gatewayapi/show/pub/v5/show/') && path.endsWith('seat_plans')) {
+        // if (path.includes('/cyy_gatewayapi/show/pub/v5/show/') && path.endsWith('seat_plans')) {
 
             for (var i = 0; i < obj.data['seatPlans'].length; i++) {
                 obj.data['seatPlans'][i].canBuyCount = 99
             }
             $.msg($.name, `可预定票数`, `已修改为：99~`);
             
-        }
+        // }
 
         body = JSON.stringify(obj);
         $done({ body, url });
